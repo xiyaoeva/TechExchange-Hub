@@ -1,0 +1,33 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechExchange Hub</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const e = React.createElement;
+    function App(){
+      const [status, setStatus] = React.useState('loading...');
+      const [questions, setQuestions] = React.useState([]);
+      React.useEffect(()=>{
+        fetch('http://localhost:8080/api/health').then(r=>r.json()).then(d=>setStatus(d.status));
+        fetch('http://localhost:8080/api/questions').then(r=>r.json()).then(setQuestions);
+      },[]);
+      return e('div', {}, [
+        e('h2', {key:1}, 'TechExchange Hub'),
+        e('p', {key:2}, 'Backend status: ' + status),
+        e('ul', {key:3},
+          questions.map((q,i)=> e('li', {key:i}, q.title + ' — ' + q.content))
+        )
+      ]);
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(e(App));
+  </script>
+</body>
+</html>
